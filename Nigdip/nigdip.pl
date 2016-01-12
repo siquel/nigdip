@@ -54,8 +54,8 @@ sub load {
 			return 1;
 		}
 		print "loaded $file = $pkg\n";
-		if (hasFunction($pkg, 'enable')) {
-			eval("$pkg\::enable()");
+		if (hasFunction($pkg, 'onLoad')) {
+			eval("$pkg\::onLoad()");
 		}
 
 	} else {
