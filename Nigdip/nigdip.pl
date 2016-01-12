@@ -12,10 +12,6 @@ sub register {
 
 }
 
-sub asd {
-	print "Hello from .pm\n";
-}
-
 sub unload {
 	my $file = shift @_;
 	my $pkg = file2Package($file);
@@ -33,6 +29,7 @@ sub unload {
 sub load {
 	my $file = shift @_;
 	my $pkg = file2Package($file);
+	print $pkg;
 	if (exists $plugins{$pkg}) {
 		my $info = packageInfo($pkg);
 		my $filename = File::Basename::basename($info->{filename});
@@ -56,12 +53,24 @@ sub load {
 			Nigdip::unload($plugins{$pkg}{filename});
 			return 1;
 		}
+		print "loaded $file = $pkg\n";
+		if (hasFunction($pkg, 'enable')) {
+			eval("$pkg\::enable()");
+		}
+
 	} else {
 		print STDERR "error opening $file : $!\n";
 		return 1;
 	}
-	print "loaded $file = $pkg\n";
+
 	return 0;
+}
+
+sub hasFunction {
+	my $module = shift @_;
+	my $func = shift @_;
+	no strict 'refs';
+	return grep { defined &{"$module\::$func"} } keys %{"$module\::"} ;
 }
 
 sub _eval {
