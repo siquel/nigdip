@@ -8,8 +8,48 @@ use Symbol();
 our %plugins;
 
 sub register {
-	my ($name) = shift @_;
+	my ($name, $desc) = @_;
+	my $pkg = findPackage();
+	if (isRegistered($pkg)) {
+		my $info = packageInfo($pkg);
+		my $file = $info->{filename};
+		print STDERR "Trying to register $file more than once!";
+		return 1;
+	}
+	$plugins{$pkg}{name} = $name;
+	$plugins{$pkg}{desc} = $desc;
+	$plugins{$pkg}{loaded} = 1;
+}
 
+sub hookServer {
+	return undef unless @_ >= 2;
+	my ($message, $callback) = @_;
+
+	my $pkg = findPackage();
+	my $info = packageInfo($pkg);
+
+	unless (ref $callback) {
+		print STDERR "callback isn't reference";
+		return undef;
+	}
+	my %hook = (
+		message => $message,
+		callback => $callback
+	);
+	push @{$info->{hooks}}, %hook;
+	my @asd = @{$info->{hooks}};
+	print $asd[0]."----------\n";
+	return \%hook;
+}
+
+sub bindCommand {
+	my ($cmd, $callback, $help) = @_;
+	my $hook = hookServer('PRIVMSG', $callback);
+	$hook->{name} = $cmd;
+	$hook->{help} = $help; 
+	my $pkg = findPackage();
+	my $info = packageInfo($pkg);
+	print @{$info->{hooks}};
 }
 
 sub unload {
@@ -19,6 +59,11 @@ sub unload {
 
 	if ($info) {
 		print "unloading $file = $pkg\n";
+
+		if (hasFunction($pkg, 'onUnload')) {
+			eval("$pkg\::onUnload()");
+		}
+
 		Symbol::delete_package($pkg);
 		delete $plugins{$pkg};
 	} else {
@@ -90,6 +135,11 @@ sub findPackage {
 sub packageInfo {
 	my $pkg = shift @_;
 	return $plugins{$pkg};
+}
+
+sub isRegistered {
+	my $info = packageInfo(shift @_);
+	return defined $info->{loaded};
 }
 
 sub file2Package {
