@@ -80,7 +80,6 @@ sub unload {
 sub load {
 	my $file = shift @_;
 	my $pkg = file2Package($file);
-	print $pkg;
 	if (exists $plugins{$pkg}) {
 		my $info = packageInfo($pkg);
 		my $filename = File::Basename::basename($info->{filename});
@@ -104,7 +103,6 @@ sub load {
 			Nigdip::unload($plugins{$pkg}{filename});
 			return 1;
 		}
-		print "loaded $file = $pkg\n";
 		if (hasFunction($pkg, 'onLoad')) {
 			eval("$pkg\::onLoad()");
 		}
@@ -136,6 +134,18 @@ sub findPackage {
 		return $pkg if $pkg =~ /^Nigdip::Plugin::/;
 	}
 	die "Unable to determine pkg";
+}
+
+sub command2Package {
+	my $cmd = shift @_;
+	while  (my ($key, $value) = each %plugins) {
+		my @hooks = @{$plugins{$key}{hooks}};
+		for my $hook (@hooks) {
+			next unless defined $hook->{name};
+			return $key if $hook->{name} eq $cmd;
+		}
+	}
+	return undef;
 }
 
 sub packageInfo {

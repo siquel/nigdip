@@ -4,8 +4,7 @@ Nigdip::register('test', 'test desc');
 sub onLoad {
 	print "onLoad called from test.pl\n";
 	Nigdip::bindCommand('test', \&callback, 'helping gg');
-	Nigdip::bindCommand('test2', \&callback, 'helping gg');
-	Nigdip::unbindCommand('test2');
+	Nigdip::command2Package('test');
 }
 
 sub callback {
@@ -21,5 +20,5 @@ sub onDisable {
 }
 
 sub onUnload {
-	print "onUnload called from test.pl\n";
+
 }
