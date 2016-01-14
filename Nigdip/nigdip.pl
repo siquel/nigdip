@@ -32,14 +32,13 @@ sub hookServer {
 		print STDERR "callback isn't reference";
 		return undef;
 	}
-	my %hook = (
+
+	push @{$info->{hooks}}, { 
 		message => $message,
 		callback => $callback
-	);
-	push @{$info->{hooks}}, %hook;
+		};
 	my @asd = @{$info->{hooks}};
-	print $asd[0]."----------\n";
-	return \%hook;
+	return $asd[-1];
 }
 
 sub bindCommand {
@@ -47,9 +46,9 @@ sub bindCommand {
 	my $hook = hookServer('PRIVMSG', $callback);
 	$hook->{name} = $cmd;
 	$hook->{help} = $help; 
-	my $pkg = findPackage();
-	my $info = packageInfo($pkg);
-	print @{$info->{hooks}};
+	#my $pkg = findPackage();
+	#my $info = packageInfo($pkg);
+	#print @{$info->{hooks}}[0]->{name};
 }
 
 sub unload {
