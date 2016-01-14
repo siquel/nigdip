@@ -11,6 +11,7 @@ sub loadScripts {
 		print "loading script $folder/$file\n";
 		Nigdip::load("$folder/$file");
 	}
+	closedir(DIR);
 }
 
 
