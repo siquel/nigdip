@@ -1,9 +1,12 @@
+use warnings;
 Nigdip::register('disable', 'Module to disable commands');
 
 sub onLoad {
 	Nigdip::bindCommand('disable', \&disable, 'disable <command name>');
+	Nigdip::tryFireEventForCommand('disable');
 }
 
 sub disable {
-	print "from disable\n";
+	#my ($sender, $message, $channel) = @_;
+	print "DIS";
 }

@@ -138,14 +138,23 @@ sub findPackage {
 
 sub command2Package {
 	my $cmd = shift @_;
-	while  (my ($key, $value) = each %plugins) {
-		my @hooks = @{$plugins{$key}{hooks}};
+	foreach my $pkg (keys %plugins) {
+		my @hooks = @{$plugins{$pkg}{hooks}};
 		for my $hook (@hooks) {
 			next unless defined $hook->{name};
-			return $key if $hook->{name} eq $cmd;
+			return $pkg if $hook->{name} eq $cmd;
 		}
 	}
 	return undef;
+}
+
+sub tryFireEventForCommand {
+	my ($cmd) = @_;
+	my $pkg = command2Package($cmd);
+	my @hooks = @{$plugins{$pkg}{hooks}};
+	my ($index) =  (grep { defined $hooks[$_]->{name} && $hooks[$_]->{name} eq $cmd} 0..$#hooks);
+	return unless defined $index;
+	$hooks[$index]->{callback}->();
 }
 
 sub packageInfo {
