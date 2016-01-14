@@ -1,3 +1,5 @@
+use Getopt::Long;
+use warnings;
 BEGIN {
 	require 'nigdip/nigdip.pl';
 }
@@ -14,5 +16,19 @@ sub loadScripts {
 	closedir(DIR);
 }
 
+sub main {
+	my $server = '';
+	my $port = 0;
+	my $ssl = '';
+	
+	GetOptions(
+		"server=s" => \$server,
+		"port=i" => \$port,
+		"ssl" => \$ssl
+		);
 
-loadScripts("plugins");
+	die ('server and port are required') if (!$server || !$port);
+	loadScripts("plugins");	
+}
+
+main();
