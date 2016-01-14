@@ -46,9 +46,16 @@ sub bindCommand {
 	my $hook = hookServer('PRIVMSG', $callback);
 	$hook->{name} = $cmd;
 	$hook->{help} = $help; 
-	#my $pkg = findPackage();
-	#my $info = packageInfo($pkg);
-	#print @{$info->{hooks}}[0]->{name};
+}
+
+sub unbindCommand {
+	my ($name) = shift @_;
+	my $pkg = findPackage();
+	return unless (exists $plugins{$pkg}{hooks});
+	my @hooks = @{$plugins{$pkg}{hooks}};
+	my ($index) =  (grep { defined $hooks[$_]->{name} && $hooks[$_]->{name} eq $name} 0..$#hooks);
+	return unless (defined $index);
+	splice(@{$plugins{$pkg}{hooks}}, $index, 1);
 }
 
 sub unload {
