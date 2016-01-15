@@ -33,9 +33,10 @@ sub main {
 	Bot->new(
 		server => $server,
 		port => $port,
-		nick => "test",
-		channels => [ "#perl"]
-		);
+		nick => "nigdid",
+		channels => [ "#perl"],
+		ssl => $ssl
+		)->run();
 }
 
 main();
