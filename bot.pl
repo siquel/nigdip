@@ -2,7 +2,7 @@ use Getopt::Long;
 use warnings;
 BEGIN {
 	require 'Nigdip/nigdip.pl';
-	require 'Nigdip/core.pl';
+
 }
 
 sub loadScripts {
@@ -30,13 +30,7 @@ sub main {
 
 	die ('server and port are required') if (!$server || !$port);
 	loadScripts("plugins");	
-	Bot->new(
-		server => $server,
-		port => $port,
-		nick => "nigdid",
-		channels => [ "#perl"],
-		ssl => $ssl
-		)->run();
+	Nigdip::connect($server, $port, $ssl);
 }
 
 main();

@@ -4,8 +4,24 @@ use strict;
 use File::Basename ();
 use File::Spec();
 use Symbol();
+BEGIN {
+	require 'Nigdip/core.pl';
+}
 
 our %plugins;
+my $bot;
+
+sub connect {
+	my ($server, $port, $ssl) = @_;
+	$bot = Bot->new(
+		server => $server,
+		port => $port,
+		nick => "nigdid",
+		channels => [ "#perl"],
+		ssl => $ssl
+		);
+	$bot->run();
+}
 
 sub register {
 	my ($name, $desc) = @_;
@@ -149,12 +165,12 @@ sub command2Package {
 }
 
 sub tryFireEventForCommand {
-	my ($cmd) = @_;
+	my ($cmd, $args) = @_;
 	my $pkg = command2Package($cmd);
 	my @hooks = @{$plugins{$pkg}{hooks}};
 	my ($index) =  (grep { defined $hooks[$_]->{name} && $hooks[$_]->{name} eq $cmd} 0..$#hooks);
 	return unless defined $index;
-	$hooks[$index]->{callback}->();
+	$hooks[$index]->{callback}->($bot, $args);
 }
 
 sub packageInfo {

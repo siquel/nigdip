@@ -4,7 +4,6 @@ Nigdip::register('test', 'test desc');
 sub onLoad {
 	print "onLoad called from test.pl\n";
 	Nigdip::bindCommand('test', \&callback, 'helping gg');
-	Nigdip::command2Package('test');
 }
 
 sub callback {
