@@ -13,6 +13,7 @@ sub said {
 	
 	$msg =~ m/^$prefix(\w+)\s?/i;
 	my $cmd = $1;
+	$data->{body} =~ s/^$prefix$cmd\s*//i;
 	Nigdip::tryFireEventForCommand($cmd, $data);
 	return undef;
 }

@@ -16,7 +16,7 @@ sub connect {
 	$bot = Bot->new(
 		server => $server,
 		port => $port,
-		nick => "nigdid",
+		nick => "nigdip",
 		channels => [ "#perl"],
 		ssl => $ssl
 		);

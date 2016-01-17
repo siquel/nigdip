@@ -2,7 +2,6 @@ use Getopt::Long;
 use warnings;
 BEGIN {
 	require 'Nigdip/nigdip.pl';
-
 }
 
 sub loadScripts {
