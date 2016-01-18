@@ -10,6 +10,20 @@ BEGIN {
 
 our %plugins;
 my $bot;
+our $PluginRoot = '';
+
+sub loadScripts {
+	my $folder = shift @_;
+	$Nigdip::PluginRoot = "$folder/";
+	opendir (DIR, $folder) or die $!;
+	while (my $file = readdir(DIR)) {
+		# only .pl files
+		next if ($file !~ m/\.pl$/);
+		print "loading script $folder/$file\n";
+		Nigdip::load("$folder/$file");
+	}
+	closedir(DIR);
+}
 
 sub connect {
 	my ($server, $port, $ssl) = @_;
@@ -88,9 +102,10 @@ sub unload {
 
 		Symbol::delete_package($pkg);
 		delete $plugins{$pkg};
-	} else {
-		print STDERR "$file is not loaded";
-	}
+		return 0;
+	} 
+	print STDERR "$file is not loaded";
+	return 1;
 }
 
 sub load {
