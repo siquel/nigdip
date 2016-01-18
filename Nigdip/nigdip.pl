@@ -182,6 +182,8 @@ sub command2Package {
 sub tryFireEventForCommand {
 	my ($cmd, $args) = @_;
 	my $pkg = command2Package($cmd);
+	# the command does not exist
+	return unless ($pkg);
 	my @hooks = @{$plugins{$pkg}{hooks}};
 	my ($index) =  (grep { defined $hooks[$_]->{name} && $hooks[$_]->{name} eq $cmd} 0..$#hooks);
 	return unless defined $index;
