@@ -6,7 +6,7 @@ BEGIN {
 
 sub main {
 	my $server = '';
-	my $port = 0;
+	my $port = 6667;
 	my $ssl = '';
 	
 	GetOptions(
