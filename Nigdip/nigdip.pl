@@ -31,7 +31,7 @@ sub connect {
 		server => $server,
 		port => $port,
 		nick => "nigdip",
-		channels => [ "#perl"],
+		channels => [ "#kahvipaussi"],
 		ssl => $ssl
 		);
 	$bot->run();
@@ -140,7 +140,7 @@ sub load {
 
 	} else {
 		print STDERR "error opening $file : $!\n";
-		return 1;
+		return 3;
 	}
 
 	return 0;
