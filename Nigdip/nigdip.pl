@@ -168,7 +168,7 @@ sub findPackage {
 }
 
 sub command2Package {
-	my $cmd = shift @_;
+	my $cmd = @_;
 	foreach my $pkg (keys %plugins) {
 		my @hooks = @{$plugins{$pkg}{hooks}};
 		for my $hook (@hooks) {
@@ -182,12 +182,13 @@ sub command2Package {
 sub tryFireEventForCommand {
 	my ($cmd, $args) = @_;
 	my $pkg = command2Package($cmd);
+	print "$pkg\nggggg";
 	# the command does not exist
 	return unless ($pkg);
 	my @hooks = @{$plugins{$pkg}{hooks}};
 	my ($index) =  (grep { defined $hooks[$_]->{name} && $hooks[$_]->{name} eq $cmd} 0..$#hooks);
 	return unless defined $index;
-	$hooks[$index]->{callback}->($bot, $args);
+	$hooks[$index]->{callback}->($bot, $args, $cmd);
 }
 
 sub packageInfo {
